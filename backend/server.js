@@ -46,13 +46,6 @@ app.use(helmet(({
 app.use(mongoSanitize());
 
 
-// const limiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 300, 
-//   standardHeaders: "draft-7",
-//   legacyHeaders: false,
-// });
-// app.use(limiter);
 
 
 if (process.env.NODE_ENV === "development") {
