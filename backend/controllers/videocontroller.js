@@ -1,4 +1,3 @@
-// controllers/videoController.js
 
 import Video from "../models/videomodel.js";
 import Industry from "../models/industrymodel.js";
@@ -12,9 +11,6 @@ const POPULATE_INDUSTRY = {
   select: "name slug",
 };
 
-// ─────────────────────────────────────────────
-// CREATE VIDEO
-// ─────────────────────────────────────────────
 
 export const createVideo = async (req, res) => {
   const { platform, sourceUrl, industry } = req.body;
@@ -61,9 +57,7 @@ export const createVideo = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// GET ALL VIDEOS
-// ─────────────────────────────────────────────
+
 
 export const getVideos = async (req, res) => {
   const { page, limit, skip } = getPaginationParams(req.query);
@@ -99,9 +93,6 @@ export const getVideos = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// GET VIDEO BY ID
-// ─────────────────────────────────────────────
 
 export const getVideoById = async (req, res) => {
   const video = await Video.findById(req.params.id).populate(POPULATE_INDUSTRY);
@@ -119,9 +110,7 @@ export const getVideoById = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// GET VIDEOS BY INDUSTRY ID
-// ─────────────────────────────────────────────
+
 
 export const getVideosByIndustry = async (req, res) => {
   const videos = await Video.find({
@@ -136,9 +125,7 @@ export const getVideosByIndustry = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// GET VIDEOS BY INDUSTRY SLUG
-// ─────────────────────────────────────────────
+
 
 export const getVideosByIndustrySlug = async (req, res) => {
   try {
@@ -188,9 +175,7 @@ export const getVideosByIndustrySlug = async (req, res) => {
     });
   }
 };
-// ─────────────────────────────────────────────
-// GET VIDEOS BY PLATFORM
-// ─────────────────────────────────────────────
+
 
 export const getVideosByPlatform = async (req, res) => {
   const videos = await Video.find({
@@ -205,9 +190,7 @@ export const getVideosByPlatform = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// UPDATE VIDEO
-// ─────────────────────────────────────────────
+
 
 export const updateVideo = async (req, res) => {
   const { platform, sourceUrl, industry } = req.body;
@@ -221,7 +204,6 @@ export const updateVideo = async (req, res) => {
     });
   }
 
-  // Thumbnail update
   if (req.files?.thumbnail?.[0]) {
     if (video.thumbnail?.key) {
       await deleteFromS3(video.thumbnail.key);
@@ -233,7 +215,6 @@ export const updateVideo = async (req, res) => {
     );
   }
 
-  // Video update
   if (req.files?.video?.[0]) {
     if (video.video?.key) {
       await deleteFromS3(video.video.key);
@@ -262,9 +243,6 @@ export const updateVideo = async (req, res) => {
   });
 };
 
-// ─────────────────────────────────────────────
-// DELETE VIDEO
-// ─────────────────────────────────────────────
 
 export const deleteVideo = async (req, res) => {
   const video = await Video.findById(req.params.id);
