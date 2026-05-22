@@ -6,7 +6,6 @@ import sendPasswordResetEmail from "../utils/sendPasswordResetEmail.js";
 import crypto from "crypto";
 
 
-// Register First Admin 
 export const registerUser = async (req, res) => {
     const userExists = await MedicoUser.findOne({ email: req.body.email });
     if (userExists) {
@@ -26,7 +25,6 @@ export const registerUser = async (req, res) => {
 };
 
 
-// Login 
 export const login = async (req, res) => {
     if (!req.body.email || !req.body.password) {
         return res.status(StatusCodes.BAD_REQUEST).json({ success: false, message: "email and password fields are required" });
@@ -51,7 +49,6 @@ export const login = async (req, res) => {
 }
 
 export const changePassword = async (req, res) => {
-  try {
     const { oldPassword, newPassword } = req.body;
 
     if (!oldPassword || !newPassword) {
@@ -60,7 +57,6 @@ export const changePassword = async (req, res) => {
         .json({ success: false, message: "Both old and new passwords are required" });
     }
 
-    // userId will usually come from decoded JWT (middleware)
     const userId = req.user.userId; 
 
     const user = await MedicoUser.findById(userId);
@@ -70,7 +66,6 @@ export const changePassword = async (req, res) => {
         .json({ success: false, message: "User not found" });
     }
 
-    // check old password
     const isMatch = await comparePassword(oldPassword, user.password);
     if (!isMatch) {
       return res
@@ -78,7 +73,6 @@ export const changePassword = async (req, res) => {
         .json({ success: false, message: "Old password is incorrect" });
     }
 
-    // hash new password
     const hashedNewPassword = await hashpasword(newPassword);
     user.password = hashedNewPassword;
 
@@ -88,17 +82,10 @@ export const changePassword = async (req, res) => {
       success: true,
       message: "Password changed successfully",
     });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "Server error" });
-  }
+
 };
 
-// Forgot Password
 export const forgotPassword = async (req, res) => {
-  try {
     const { email } = req.body;
 
     if (!email) {
@@ -116,19 +103,15 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    // Generate password reset token
     const passwordResetToken = crypto.randomBytes(32).toString('hex');
     
-    // Set token and expiration (1 hour from now)
     user.passwordResetToken = passwordResetToken;
     user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
     
     await user.save();
 
-    // Get origin from request
     const origin = process.env.CLIENT_URL;
 
-    // Send password reset email
     await sendPasswordResetEmail({
       name: user.name,
       email: user.email,
@@ -141,16 +124,9 @@ export const forgotPassword = async (req, res) => {
       message: "Password reset email sent successfully. Please check your email."
     });
 
-  } catch (error) {
-    console.error('Forgot password error:', error);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      message: "Server error. Please try again later."
-    });
-  }
+ 
 };
 
-// Reset Password
 export const resetPassword = async (req, res) => {
   try {
     const { token, email, newPassword } = req.body;
@@ -162,7 +138,6 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Find user with valid reset token
     const user = await MedicoUser.findOne({
       email,
       passwordResetToken: token,
@@ -176,10 +151,8 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    // Hash new password
     const hashedPassword = await hashpasword(newPassword);
     
-    // Update user password and clear reset token
     user.password = hashedPassword;
     user.passwordResetToken = "";
     user.passwordResetExpires = undefined;
@@ -199,7 +172,6 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
-// Validate Reset Token (optional - for frontend validation)
 export const validateResetToken = async (req, res) => {
   try {
     const { token, email } = req.query;
