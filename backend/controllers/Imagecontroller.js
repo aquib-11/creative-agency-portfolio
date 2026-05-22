@@ -9,12 +9,9 @@ const POPULATE_INDUSTRY = {
   select: "name slug",
 };
 
-// Create Image
 export const createImage = async (req, res) => {
-  try {
     const { industry } = req.body;
 
-    // Single image
     if (req.file) {
       const uploadedImage = await uploadToS3(req.file, "images/files");
 
@@ -54,17 +51,10 @@ export const createImage = async (req, res) => {
       success: false,
       message: "Image is required",
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+
 };
 
-// Get All Images
 export const getImages = async (req, res) => {
-  try {
     const { page, limit, skip } = getPaginationParams(req.query);
     const { industry } = req.query;
 
@@ -87,18 +77,11 @@ export const getImages = async (req, res) => {
       data: images,
       pagination,
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+ 
 };
 
-// Get Image By ID
 export const getImageById = async (req, res) => {
-  try {
-    const image = await Image.findById(req.params.id).populate(
+   const image = await Image.findById(req.params.id).populate(
       POPULATE_INDUSTRY,
     );
 
@@ -113,17 +96,10 @@ export const getImageById = async (req, res) => {
       success: true,
       data: image,
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  
 };
 
-// Get Images By Industry ID
 export const getImagesByIndustry = async (req, res) => {
-  try {
     const { page, limit, skip } = getPaginationParams(req.query);
 
     const query = {
@@ -147,17 +123,10 @@ export const getImagesByIndustry = async (req, res) => {
       data: images,
       pagination,
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+  
 };
 
-// Get Images By Industry Slug
 export const getImagesByIndustrySlug = async (req, res) => {
-  try {
     const { page, limit, skip } = getPaginationParams(req.query);
 
     const industry = await Industry.findOne({
@@ -195,17 +164,11 @@ export const getImagesByIndustrySlug = async (req, res) => {
       industry,
       pagination,
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+ 
 };
 
 // Update Image
 export const updateImage = async (req, res) => {
-  try {
     const image = await Image.findById(req.params.id);
 
     if (!image) {
@@ -244,17 +207,10 @@ export const updateImage = async (req, res) => {
       success: true,
       data: image,
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+ 
 };
 
-// Delete Image
 export const deleteImage = async (req, res) => {
-  try {
     const image = await Image.findById(req.params.id);
 
     if (!image) {
@@ -274,10 +230,5 @@ export const deleteImage = async (req, res) => {
       success: true,
       message: "Image deleted successfully",
     });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
+ 
 };
