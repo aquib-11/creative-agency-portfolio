@@ -4,17 +4,14 @@ import { uploadToS3, deleteFromS3 } from "../utils/s3Upload.js";
 import { getPaginationParams, getPaginationInfo } from "../utils/pagination.js";
 import { makeSlug, getUniqueSlug } from "../utils/slugUtils.js";
 
-// ─── CREATE ───────────────────────────────────────────────────────────────────
 export const createIndustry = async (req, res) => {
-  try {
     const { name, description, isActive } = req.body;
 
     if (!name) {
       return res.status(400).json({ success: false, message: "Name is required" });
     }
 
-    // If order is explicitly provided use it, otherwise pass 0 so
-    // the pre-save hook auto-assigns to end of list
+   
     const order = req.body.order !== undefined ? Number(req.body.order) : 0;
 
     const baseSlug = makeSlug(name);
@@ -32,14 +29,10 @@ export const createIndustry = async (req, res) => {
     });
 
     res.status(201).json({ success: true, data: industry });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+ 
 };
 
-// ─── GET ALL (paginated + search) ─────────────────────────────────────────────
 export const getIndustries = async (req, res) => {
-  try {
     const { page, limit, skip } = getPaginationParams(req.query);
     const { search } = req.query;
 
@@ -60,50 +53,34 @@ export const getIndustries = async (req, res) => {
     const pagination = getPaginationInfo(totalDocs, page, limit);
 
     res.json({ success: true, data: industries, pagination });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+  
 };
 
-// ─── GET ACTIVE (for public homepage — no pagination) ─────────────────────────
 export const getActiveIndustries = async (req, res) => {
-  try {
     const industries = await Industry.find({ isActive: true }).sort({ order: 1, createdAt: -1 });
     res.json({ success: true, data: industries });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+  
 };
 
-// ─── GET ONE BY ID ────────────────────────────────────────────────────────────
 export const getIndustryById = async (req, res) => {
-  try {
     const industry = await Industry.findById(req.params.id);
     if (!industry) {
       return res.status(404).json({ success: false, message: "Industry not found" });
     }
     res.json({ success: true, data: industry });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+  
 };
 
-// ─── GET ONE BY SLUG ──────────────────────────────────────────────────────────
 export const getIndustryBySlug = async (req, res) => {
-  try {
     const industry = await Industry.findOne({ slug: req.params.slug });
     if (!industry) {
       return res.status(404).json({ success: false, message: "Industry not found" });
     }
     res.json({ success: true, data: industry });
-  } catch (error) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+  
 };
 
-// ─── UPDATE ───────────────────────────────────────────────────────────────────
 export const updateIndustry = async (req, res) => {
-  try {
     const { name, description, order, isActive } = req.body;
 
     const industry = await Industry.findById(req.params.id);
@@ -116,7 +93,6 @@ export const updateIndustry = async (req, res) => {
       industry.coverImage = await uploadToS3(req.file, "industries");
     }
 
-    // If name changes → regenerate slug
     if (name !== undefined && name !== industry.name) {
       industry.name = name;
       const baseSlug = makeSlug(name);
@@ -126,20 +102,15 @@ export const updateIndustry = async (req, res) => {
     if (description !== undefined) industry.description = description;
     if (isActive !== undefined) industry.isActive = isActive;
 
-    // Assign order last — triggers pre-save hook to shift others
     if (order !== undefined) industry.order = Number(order);
 
     await industry.save();
 
     res.json({ success: true, data: industry });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+
 };
 
-// ─── DELETE ───────────────────────────────────────────────────────────────────
 export const deleteIndustry = async (req, res) => {
-  try {
     const industry = await Industry.findById(req.params.id);
     if (!industry) {
       return res.status(404).json({ success: false, message: "Industry not found" });
@@ -154,7 +125,5 @@ export const deleteIndustry = async (req, res) => {
     await industry.deleteOne();
 
     res.json({ success: true, message: "Industry deleted successfully" });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+ 
 };
