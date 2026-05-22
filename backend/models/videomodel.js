@@ -1,4 +1,3 @@
-// models/videoModel.js
 
 import mongoose from "mongoose";
 

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-// models/userModel.js (add these fields to your existing schema)
 const userSchema = mongoose.Schema(
   {
     name: {

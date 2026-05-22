@@ -1,4 +1,3 @@
-// models/imagemodel.js
 
 import mongoose from "mongoose";
 
