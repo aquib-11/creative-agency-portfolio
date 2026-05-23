@@ -128,15 +128,15 @@ const Hero = () => {
 
             <div className="flex flex-row flex-wrap gap-4 sm:gap-6 pt-6 md:pt-8">
 
-              <Link href="/clients" className=" px-6 sm:px-8 py-3 bg-black dark:bg-white tracking-wider text-white dark:text-black  hover:opacity-80 transition-opacity">
+              <Link href="/industries" className=" px-6 sm:px-8 py-3 bg-black dark:bg-white tracking-wider text-white dark:text-black  hover:opacity-80 transition-opacity">
 
-                View Our Work
+                Industries we Serve
 
               </Link>
 
-              <Link href="/contact" className="px-6 sm:px-8 tracking-widest py-3 border border-black dark:border-white text-black dark:text-white font-semibold hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+              <Link href="/testimonials" className="px-6 sm:px-8 tracking-widest py-3 border border-black dark:border-white text-black dark:text-white font-semibold hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
 
-                Get In Touch
+                Testimonials
 
               </Link>
 
