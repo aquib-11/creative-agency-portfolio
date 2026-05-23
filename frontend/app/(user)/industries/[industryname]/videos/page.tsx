@@ -367,7 +367,7 @@ export default function VideosPage({
           <p>No videos found</p>
         ) : (
           <>
-            <div className="columns-2 lg:columns-3 gap-4">
+            <div className="md:columns-2 lg:columns-3 gap-4">
               {videos.map((video) => (
                 <VideoCard
                   key={video._id}
