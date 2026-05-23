@@ -76,7 +76,7 @@ A full-stack Digital Marketing Portfolio platform where admins can manage and sh
 
 ```bash
 # Clone repo
-git clone https://github.com/your-username/portfolio.git
+git clone https://github.com/aquib-11/creative-agency-portfolio.git
 
 # Install frontend
 cd frontend
